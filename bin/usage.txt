@@ -1,0 +1,5 @@
+USAGE: hypergit [--version] [command] [--help]
+
+Commands:
+  create        Create a git repo in the hypergit swarm
+
