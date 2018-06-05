@@ -6,6 +6,9 @@
   "repository": {
     "url": "git://github.com/noffle/hypergit.git"
   },
+  "bin": {
+    "hypergit": "bin/cli.js"
+  },
   "homepage": "https://github.com/noffle/hypergit",
   "bugs": "https://github.com/noffle/hypergit/issues",
   "main": "index.js",
