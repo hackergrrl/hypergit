@@ -12,6 +12,15 @@ if (args._.length === 2) {
 
 switch (args._[2]) {
   case 'create':
+    if (fs.existsSync('.hypergit')) {
+      console.log('A hypergit repo already exists in this directory.')
+      return process.exit(1)
+    }
+
+    var db = hyperdb('.hypergit')
+    db.ready(function () {
+      console.log('hypergit://' + db.key.toString('hex'))
+    })
     break
   default:
     printUsage()
