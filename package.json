@@ -22,6 +22,7 @@
     "discovery-swarm": "^5.1.1",
     "env-paths": "^1.0.0",
     "gitconfiglocal": "^2.0.1",
+    "hypercore": "^6.15.0",
     "hyperdb": "^3.1.2",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1"
