@@ -189,7 +189,7 @@ function swarmReplicate (swarm, db) {
       console.error('done replicating', info.id.toString('hex'))
     })
     r.once('error', function (err) {
-      console.error('err', err)
+      console.error('timeout with', info.id.toString('hex'))
     })
   })
 }
