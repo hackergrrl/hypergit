@@ -13,16 +13,9 @@ if (args._.length === 2) {
 
 switch (args._[2]) {
   case 'create':
-    if (fs.existsSync('.hypergit')) {
-      console.log('A hypergit repo already exists in this directory.')
-      return process.exit(1)
-    }
-    if (!fs.existsSync(path.join('.git', 'config'))) {
-      console.log('There is no git repository here.')
-      return process.exit(1)
-    }
+    ensureNoHypergit()
 
-    var db = hyperdb('.hypergit')
+    var db = getHyperdb()
     db.ready(function () {
       var name = 'swarm'
       var key = db.key.toString('hex')
@@ -30,9 +23,52 @@ switch (args._[2]) {
       console.log('hypergit://' + key)
     })
     break
+  case 'auth':
+    ensureValidHypergit()
+
+    var key = process.argv[3]
+    if (!key) {
+      console.log('Must include a KEY to authorize.')
+      return process.exit(1)
+    }
+
+    var db = getHyperdb()
+    db.ready(function () {
+      db.authorize(key, function (err) {
+        if (err) console.log('Failed to authorize:', err)
+        else console.log('Authorized write permissions for', key)
+      })
+    })
+    break
   default:
     printUsage()
     break
+}
+
+function getHyperdb () {
+  return hyperdb('.hypergit')
+}
+
+function ensureNoHypergit () {
+  if (fs.existsSync('.hypergit')) {
+    console.log('A hypergit repo already exists in this directory.')
+    return process.exit(1)
+  }
+  if (!fs.existsSync(path.join('.git', 'config'))) {
+    console.log('There is no git repository here.')
+    return process.exit(1)
+  }
+}
+
+function ensureValidHypergit () {
+  if (!fs.existsSync('.hypergit')) {
+    console.log('No hypergit repo exists in this directory.')
+    return process.exit(1)
+  }
+  if (!fs.existsSync(path.join('.git', 'config'))) {
+    console.log('There is no git repository here.')
+    return process.exit(1)
+  }
 }
 
 function printUsage () {
