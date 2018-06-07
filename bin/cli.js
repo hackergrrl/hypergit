@@ -98,16 +98,21 @@ function printUsage () {
 
 function swarmReplicate (db) {
   var key = db.key.toString('hex')
+  console.log('id', db.local.key.toString('hex'))
   var swarm = discovery(swarmDefaults({
     id: db.local.key,
   }))
+  swarm.listen(2342)
   swarm.join(key)
   swarm.on('connection', function (conn, info) {
-    console.log('found peer', info)
+    console.log('found peer', info.id.toString('hex'))
     var r = db.replicate() 
     r.pipe(conn).pipe(r) 
     r.once('end', function () {
-      console.error('done replicating', info)
+      console.error('done replicating', info.id.toString('hex'))
+    })
+    r.once('error', function (err) {
+      console.error('err', err)
     })
   })
 }
