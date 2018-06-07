@@ -33,12 +33,13 @@ switch (args._[2]) {
       console.log('Must include a KEY to authorize.')
       return process.exit(1)
     }
+    if (typeof key === 'string') key = Buffer.from(key, 'hex')
 
     var db = getHyperdb()
     db.ready(function () {
       db.authorize(key, function (err) {
         if (err) console.log('Failed to authorize:', err)
-        else console.log('Authorized write permissions for', key)
+        else console.log('Authorized write permissions for', key.toString('hex'))
       })
     })
     break
