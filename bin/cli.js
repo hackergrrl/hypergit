@@ -11,6 +11,7 @@ var envpaths = require('env-paths')('hypergit')
 var mkdirp = require('mkdirp')
 var crypto = require('hypercore/lib/crypto')
 var gitconfig = require('gitconfiglocal')
+var web = require('../web')
 
 if (args._.length === 2) {
   printUsage()
@@ -46,14 +47,24 @@ switch (args._[2]) {
     // seed ALL repos
     fs.readdir(envpaths.config, function (err, keys) {
       if (err) throw err
+      var dbs = []
+      var pending = 0
       keys.forEach(function (key, n) {
+        pending++
         getHyperdb(key, function (err, db) {
+          if (err) return done()
           console.log('Seeding', db.key.toString('hex'))
+          dbs.push(db)
           var swarm = discovery(swarmDefaults())
           swarm.listen(2342 + n)
           swarmReplicate(swarm, db)
+          done()
         })
       })
+      function done () {
+        if (--pending) return
+        web(dbs)
+      }
     })
     break
   case 'id':
