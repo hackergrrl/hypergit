@@ -29,5 +29,16 @@ resulting state.
 From here you could do a git fetch swarm to pull down those latest changes. The
 cool thing is that since the remote lives on your local filesystem, you can do
 push and pull and fetch even while offline, and your changes will sync to the
-rest of the peers involved in this repo once you're online again.
+rest of the peers involved in this repo once you're online again. You can even
+peer with just other users on the same local network as you and collaborate in
+offline environments.
+
+## Data lives on the peers
+
+This approach differs from federation, where users pick from a set of servers to
+host their git repositories. With hypergit all of the data lives on peers
+directly, so everyone with a laptop is a first-class citizen, and
+doesn't have to choose between hosted services that could go down at some point.
+By using hypergit seed you can, not unlike bittorrent, re-host git repos you
+like on servers and provide them greater availability.)
 
