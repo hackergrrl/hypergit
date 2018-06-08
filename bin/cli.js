@@ -45,26 +45,19 @@ switch (args._[2]) {
     break
   case 'seed':
     // seed ALL repos
-    fs.readdir(envpaths.config, function (err, keys) {
-      if (err) throw err
-      var dbs = []
-      var pending = 0
-      keys.forEach(function (key, n) {
-        pending++
-        getHyperdb(key, function (err, db) {
-          if (err) return done()
-          console.log('Seeding', db.key.toString('hex'))
-          dbs.push(db)
-          var swarm = discovery(swarmDefaults())
-          swarm.listen(2342 + n)
-          swarmReplicate(swarm, db)
-          done()
-        })
+    getAllHyperdbs(function (err, dbs) {
+      dbs.forEach(function (db, n) {
+        console.log('Seeding', db.key.toString('hex'))
+        dbs.push(db)
+        var swarm = discovery(swarmDefaults())
+        swarm.listen(2342 + n)
+        swarmReplicate(swarm, db)
       })
-      function done () {
-        if (--pending) return
-        web(dbs)
-      }
+    })
+    break
+  case 'web':
+    getAllHyperdbs(function (err, dbs) {
+      web(dbs)
     })
     break
   case 'id':
@@ -202,5 +195,25 @@ function swarmReplicate (swarm, db) {
     r.once('error', function (err) {
       console.error('timeout with', info.id.toString('hex'))
     })
+  })
+}
+
+function getAllHyperdbs (cb) {
+  fs.readdir(envpaths.config, function (err, keys) {
+    if (err) throw err
+    var dbs = []
+    var pending = 0
+    keys.forEach(function (key, n) {
+      pending++
+      getHyperdb(key, function (err, db) {
+        if (err) return done()
+        dbs.push(db)
+        done()
+      })
+    })
+    function done () {
+      if (--pending) return
+      cb(null, dbs)
+    }
   })
 }
