@@ -55,11 +55,20 @@ function writeRepos (dbs) {
 function writeRepo (db) {
   return cat([
     pull.once('<h3>' + db.key.toString('hex') + '</h3>'),
-    pull.once('<h4>tags</h4>'),
+
+    pull.once('<h4>Tags</h4>'),
     pull(
       getTags(db),
       pull.map(function (tag) {
         return `<li>${tag.name}: <code>${tag.hash}</code></li>`
+      })
+    ),
+
+    pull.once('<h4>Branches</h4>'),
+    pull(
+      getBranches(db),
+      pull.map(function (branch) {
+        return `<li>${branch.name}: <code>${branch.hash}</code></li>`
       })
     )
   ])
@@ -74,6 +83,23 @@ function getTags (db) {
       var tag = node.key.replace('git/refs/tags/', '')
       return {
         name: tag,
+        hash: node.value
+      }
+    }),
+    pull.filter(function (data) {
+      return !!data
+    })
+  )
+}
+
+function getBranches (db) {
+  return pull(
+    toPull.source(db.createReadStream('git/refs/heads')),
+    pull.map(function (nodes) {
+      var node = nodes[0]
+      var branch = node.key.replace('git/refs/heads/', '')
+      return {
+        name: branch,
         hash: node.value
       }
     }),
