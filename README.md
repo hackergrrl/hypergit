@@ -41,3 +41,11 @@ directly, so everyone with a laptop is a first-class citizen, and
 doesn't have to choose between hosted services that could go down at some point.
 By using hypergit seed you can, not unlike bittorrent, re-host git repos you
 like on servers and provide them greater availability.)
+
+## What hypergit isn't
+
+This isn't a github replacement. hypergit wants to be a powerful primitive that
+*enables* social peer-to-peer coding. There are many ways to do coding with
+other humans, and heavy opinions on that don't feel like they ought to be tied
+in with the lower level pieces.
+
