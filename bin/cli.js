@@ -46,11 +46,11 @@ switch (args._[2]) {
     // seed ALL repos
     fs.readdir(envpaths.config, function (err, keys) {
       if (err) throw err
-      var swarm = discovery(swarmDefaults())
-      swarm.listen(2342)
-      keys.forEach(function (key) {
+      keys.forEach(function (key, n) {
         getHyperdb(key, function (err, db) {
           console.log('Seeding', db.key.toString('hex'))
+          var swarm = discovery(swarmDefaults())
+          swarm.listen(2342 + n)
           swarmReplicate(swarm, db)
         })
       })
