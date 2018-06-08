@@ -183,7 +183,7 @@ function swarmReplicate (swarm, db) {
   swarm.join(key)
   swarm.on('connection', function (conn, info) {
     console.log('found peer', info.id.toString('hex'))
-    var r = db.replicate({live:true})
+    var r = db.replicate({live:false})
     r.pipe(conn).pipe(r) 
     r.once('end', function () {
       console.error('done replicating', info.id.toString('hex'))
