@@ -5,6 +5,7 @@ var cat = require('pull-cat')
 var Repo = require('hyperdb-git-repo')
 var RepoPlusPlus = require('pull-git-repo')
 var marked = require('marked')
+var routes = require('routes')
 
 module.exports = function (dbs) {
   var keyToDb = {}
@@ -15,33 +16,52 @@ module.exports = function (dbs) {
     }
   })
 
+  var router = routes()
+  router.addRoute('/', serveRoot)
+  router.addRoute('/:hash([0-9a-f]{64})', serveRepo)
+  router.addRoute('/:hash/blob/*', serveBlob)
+
+  var state = {
+    dbs: dbs,
+    keyToDb: keyToDb
+  }
+
   var server = http.createServer(function (req, res) {
     res.setHeader('content-type', 'text/html')
 
-    if (req.url === '/') {
-      pull(
-        cat([
-          writeTitle(),
-          pull.once('<p>Local repositories:</p>'),
-          writeRepos(dbs)
-        ]),
-        toPull.sink(res)
-      )
-    } else if (/[0-9a-f]{64}/.test(req.url)) {
-      var e = keyToDb[req.url.slice(1)]
-      pull(
-        cat([
-          writeTitle(),
-          writeRepo(e.db, e.repo)
-        ]),
-        toPull.sink(res)
-      )
-    }
+    var m = router.match(req.url)
+    pull(
+     m ? m.fn(req, res, state, m) : pull.once('404'),
+      toPull.sink(res)
+    )
   })
 
   server.listen(9111, function () {
     console.log('gitverse live on http://localhost:9111')
   })
+}
+
+function serveRoot (req, res, state, m) {
+  return pull(
+    cat([
+      writeTitle(),
+      pull.once('<p>Local repositories:</p>'),
+      writeRepos(state.dbs)
+    ]),
+  )
+}
+
+function serveRepo (req, res, state, m) {
+  var e = state.keyToDb[m.params.hash]
+  return cat([
+    writeTitle(),
+    writeRepo(e.db, e.repo)
+  ])
+}
+
+function serveBlob (req, res, state, m) {
+  var e = state.keyToDb[m.params.hash]
+  return writeBlob(e.db, e.repo, m.splats[0])
 }
 
 function writeTitle () {
@@ -175,6 +195,7 @@ function deferred (fn) {
 }
 
 function writeTree (db, repo, hash) {
+  var repoId = db.key.toString('hex')
   return cat([
     pull.once('<div style="border-style: solid; border-color: black; border-width: 1px">'),
 
@@ -182,7 +203,9 @@ function writeTree (db, repo, hash) {
     pull(
       repo.readTree(hash),
       pull.map(function (elm) {
-        return '<li>' + elm.name + '</li>'
+        return `<li>
+          <a href="${repoId}/blob/${elm.id}">${elm.name}</a></li>
+        `
       })
     ),
 
@@ -199,6 +222,22 @@ function writeReadme (db, repo, hash) {
           if (err) return cb(null, pull.once(err.toString()))
           var text = Buffer.concat(bufs).toString()
           var body = `<code>${marked(text)}</code>`
+          cb(null, pull.once(body))
+        })
+      )
+    })
+  }) 
+}
+
+function writeBlob (db, repo, hash) {
+  return deferred(function (cb) {
+    repo.getRef(hash, function (err, object, id) {
+      pull(
+        object.read,
+        pull.collect(function (err, bufs) {
+          if (err) return cb(null, pull.once(err.toString()))
+          var text = Buffer.concat(bufs).toString()
+          var body = `<code>${text}</code>`
           cb(null, pull.once(body))
         })
       )
