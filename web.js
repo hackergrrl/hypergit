@@ -62,23 +62,22 @@ function writeRepo (db, repo) {
   return cat([
     pull.once('<h3>' + db.key.toString('hex') + '</h3>'),
 
-    pull.once('<h4>Tags</h4>'),
-    pull(
-      getTags(db),
-      pull.map(function (tag) {
-        return `<li>${tag.name}: <code>${tag.hash}</code></li>`
-      })
-    ),
+    //pull.once('<h4>Tags</h4>'),
+    //pull(
+    //  getTags(db),
+    //  pull.map(function (tag) {
+    //    return `<li>${tag.name}: <code>${tag.hash}</code></li>`
+    //  })
+    //),
 
-    pull.once('<h4>Branches</h4>'),
-    pull(
-      getBranches(db),
-      pull.map(function (branch) {
-        return `<li>${branch.name}: <code>${branch.hash}</code></li>`
-      })
-    ),
+    //pull.once('<h4>Branches</h4>'),
+    //pull(
+    //  getBranches(db),
+    //  pull.map(function (branch) {
+    //    return `<li>${branch.name}: <code>${branch.hash}</code></li>`
+    //  })
+    //),
 
-    pull.once('<h4>HEAD Tree</h4>'),
     // files list
     deferred(function (cb) {
       repo.resolveRef('HEAD', function (err, hash) {
@@ -199,7 +198,7 @@ function writeReadme (db, repo, hash) {
         pull.collect(function (err, bufs) {
           if (err) return cb(null, pull.once(err.toString()))
           var text = Buffer.concat(bufs).toString()
-          var body = '<code>' + marked(text) + '</code>'
+          var body = `<code>${marked(text)}</code>`
           cb(null, pull.once(body))
         })
       )
