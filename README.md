@@ -21,6 +21,15 @@ Commands:
 
 ```
 
+The `hypergit` cli lets you manage hypergit remotes. In order to be able to `git
+clone hypergit://...` URLs, you'll need the `git-remote-hypergit` helper:
+
+```
+npm install -g git-remote-hypergit
+```
+
+**TODO**: install this command with the `hypergit` command! (PRs welcome)
+
 ## Just another git remote
 
 hypergit wants to be a special git remote, like `https://...` or `ssh://...`,
