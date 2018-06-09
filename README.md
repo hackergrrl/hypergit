@@ -2,6 +2,25 @@
 
 > CLI for managing peer-to-peer git repositories
 
+## Usage
+
+```
+USAGE: hypergit [--version] [command] [--help]
+
+Commands:
+  create        Create a new hypergit repo.
+
+  auth KEY      Grant write access to a user identified by KEY.
+
+  seed          Actively share this repo with other peers.
+
+  id            Print your local repo's key. Users with write access can 'auth'
+                this to grant KEY write access too.
+
+  web           Start hosting local web frontend.
+
+```
+
 ## Just another git remote
 
 hypergit wants to be a special git remote, like `https://...` or `ssh://...`,
