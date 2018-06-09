@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var through = require('through2')
 var fs = require('fs')
 var path = require('path')
 var args = require('minimist')(process.argv)
@@ -23,7 +24,7 @@ switch (args._[2]) {
     getHyperdb(null, function (err, db) {
       var name = 'swarm'
       var key = db.key.toString('hex')
-      spawn('git', ['remote', 'add', name, 'hypergit://' + key])
+      createRemote(name, 'hypergit://' + key)
       console.log('hypergit://' + key)
     })
     break
@@ -83,6 +84,42 @@ switch (args._[2]) {
         getHyperdb(key, function (err, db) {
           if (err) throw err
           console.log(db.local.key.toString('hex'))
+        })
+      }
+    })
+    break
+  case 'fork':
+    getHypergitRemotes(function (err, remotes) {
+      if (!remotes.length) {
+        console.log('No hypergit remotes on this git repo.')
+        return process.exit(1)
+      } else if (remotes.length === 1) {
+        var key = remotes[0].url.replace('hypergit://', '')
+        getHyperdb(key, function (err, db) {
+          if (err) throw err
+          createFork(db, function (err, newDb) {
+            var key = newDb.key.toString('hex')
+            createRemote('fork', 'hypergit://' + key)
+            console.log('Created new remote "fork": hypergit://' + key)
+          })
+        })
+      } else if (!process.argv[3]) {
+        console.log('Multiple hypergit remotes present. Specify which one you\'d like the id of.')
+        return process.exit(1)
+      } else {
+        var remote = config.remote[process.argv[3]]
+        if (!remote) {
+          console.log('No hypergit remote by that name.')
+          return process.exit(1)
+        }
+        var key = remote.url.replace('hypergit://', '')
+        getHyperdb(key, function (err, db) {
+          if (err) throw err
+          createFork(db, function (err, newDb) {
+            var key = newDb.key.toString('hex')
+            createRemote('fork', 'hypergit://' + key)
+            console.log('Created new remote "fork": hypergit://' + key)
+          })
         })
       }
     })
@@ -213,6 +250,31 @@ function getAllHyperdbs (cb) {
     function done () {
       if (--pending) return
       cb(null, dbs)
+    }
+  })
+}
+
+function createRemote (name, url) {
+  spawn('git', ['remote', 'add', name, url])
+}
+
+function createFork (db, cb) {
+  getHyperdb(null, function (err, newDb) {
+    var t = through.obj(write, flush)
+    db.createHistoryStream().pipe(t)
+
+    function write (node, _, next) {
+      console.log('copying', node.key)
+      newDb.put(node.key, node.value, function (err) {
+        if (err) throw err
+        next()
+      })
+    }
+
+    function flush (done) {
+      console.log('flushing')
+      done()
+      cb(null, newDb)
     }
   })
 }
