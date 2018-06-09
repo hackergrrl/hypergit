@@ -6,3 +6,5 @@ Commands:
   seed          Actively share this repo with other peers
   id            Print your local repo's key
                   (users with write access can 'auth' this key)
+  web           Host local web frontend
+
