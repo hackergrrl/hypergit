@@ -47,7 +47,6 @@ switch (args._[2]) {
     // seed ALL repos
     getAllHyperdbs(function (err, dbs) {
       dbs.forEach(function (db, n) {
-        console.log('Seeding', db.key.toString('hex'))
         dbs.push(db)
         var swarm = discovery(swarmDefaults())
         swarm.listen(2342 + n)
@@ -183,17 +182,17 @@ function printUsage () {
 
 function swarmReplicate (swarm, db) {
   var key = db.key.toString('hex')
-  //console.log('id', db.local.key.toString('hex'))
+  console.log('[' + key + '] seeding')
   swarm.join(key)
   swarm.on('connection', function (conn, info) {
-    console.log('found peer', info.id.toString('hex'))
+    console.log('['+key+'] found peer', info.id.toString('hex'))
     var r = db.replicate({live:false})
     r.pipe(conn).pipe(r) 
     r.once('end', function () {
-      console.error('done replicating', info.id.toString('hex'))
+      console.error('[' + key + '] done replicating', info.id.toString('hex'))
     })
     r.once('error', function (err) {
-      console.error('timeout with', info.id.toString('hex'))
+      console.error('[' + key + '] timeout with', info.id.toString('hex'))
     })
   })
 }
