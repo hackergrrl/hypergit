@@ -8,17 +8,19 @@
 USAGE: hypergit [--version] [command] [--help]
 
 Commands:
-  create        Create a new hypergit repo.
+  create        Create a hypergit repo.
 
   auth KEY      Grant write access to a user identified by KEY.
 
   seed          Actively share this repo with other peers.
 
-  id            Print your local repo's key. Users with write access can 'auth'
-                this to grant KEY write access too.
+  id            Print your local repo's key.
+                  (users with write access can 'auth' this key)
 
-  web           Start hosting local web frontend.
+  fork          Create a new remote 'fork' that is a fork of the
+                  repo you are currently in.
 
+  web           Host local web frontend.
 ```
 
 The `hypergit` cli lets you manage hypergit remotes. In order to be able to `git
