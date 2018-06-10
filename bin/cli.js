@@ -28,22 +28,6 @@ switch (args._[2]) {
       console.log('hypergit://' + key)
     })
     break
-  case 'auth':
-    var key = process.argv[3]
-    if (!key) {
-      console.log('Must include a KEY to authorize.')
-      return process.exit(1)
-    }
-    if (typeof key === 'string') key = Buffer.from(key, 'hex')
-
-    getCurrentHyperdb(function (err, db) {
-      if (err) throw err
-      db.authorize(key, function (err) {
-        if (err) console.log('Failed to authorize:', err)
-        else console.log('Authorized write permissions for', key.toString('hex'))
-      })
-    })
-    break
   case 'seed':
     // seed ALL repos
     getAllHyperdbs(function (err, dbs) {

@@ -5,20 +5,14 @@
 ## Usage
 
 ```
-USAGE: hypergit [--version] [command] [--help]
+USAGE: hypergit [command]
 
 Commands:
   create        Create a hypergit repo.
 
-  auth KEY      Grant write access to a user identified by KEY.
-
   seed          Actively share this repo with other peers.
 
-  id            Print your local repo's key.
-                  (users with write access can 'auth' this key)
-
-  fork          Create a new remote 'fork' that is a fork of the
-                  repo you are currently in.
+  fork          Create a new remote 'fork' of the current repo.
 
   web           Host local web frontend.
 ```
