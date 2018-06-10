@@ -2,6 +2,12 @@
 
 > CLI for managing peer-to-peer git repositories
 
+## Install
+
+```
+npm i hypergit -g
+```
+
 ## Usage
 
 ```
@@ -23,14 +29,8 @@ Commands:
   web           Host local web frontend.
 ```
 
-The `hypergit` cli lets you manage hypergit remotes. In order to be able to `git
-clone hypergit://...` URLs, you'll need the `git-remote-hypergit` helper:
-
-```
-npm install -g git-remote-hypergit
-```
-
-**TODO**: install this command with the `hypergit` command! (PRs welcome)
+The `hypergit` cli lets you manage hypergit remotes and enables you to `git
+clone hypergit://...` URLs.
 
 ## Just another git remote
 
