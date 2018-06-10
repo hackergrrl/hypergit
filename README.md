@@ -23,10 +23,14 @@ Commands:
   web           Host local web frontend.
 ```
 
-The `hypergit` cli lets you manage hypergit remotes and enables you to `git
-clone hypergit://...` URLs.
+The `hypergit` cli lets you
 
-## Just another git remote
+1. manage hypergit remotes, and
+2. lets you `git clone hypergit://...` URLs
+
+## What?
+
+### Just another git remote
 
 hypergit wants to be a special git remote, like `https://...` or `ssh://...`,
 except instead of pointing to a specific (centralized) server somewhere on the
@@ -34,7 +38,9 @@ internet, it points to a peer-to-peer-friendly database on your own computer.
 When you 'push' to a hypergit remote, you're writing your changes to a local
 hyperdb, which mirrors how git would lay itself out on the filesystem.
 
-## P2P sync & works offline
+## Why?
+
+### P2P sync & works offline
 
 hyperdb's special power is the ability to sync itself with other peers over the
 internet.
@@ -57,7 +63,7 @@ rest of the peers involved in this repo once you're online again. You can even
 peer with just other users on the same local network as you and collaborate in
 offline environments.
 
-## Data lives on the peers
+### Data lives on the peers
 
 This approach differs from federation, where users pick from a set of servers to
 host their git repositories. With hypergit all of the data lives on peers
