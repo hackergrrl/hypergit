@@ -73,3 +73,12 @@ This isn't a github replacement. hypergit wants to be a powerful primitive that
 other humans, and heavy opinions on that don't feel like they ought to be tied
 in with the lower level pieces.
 
+## Contributors
+
+With hypergit, each project participant has their own hypergit repo. There is no
+"origin" central authority.
+
+- @noffle: `hypergit://207dbaef657d688ad528573ae66b5a0bede40fcb82e6b91afc44ddd43c84874f`
+
+If you'd like your hypergit added, open a PR.
+
