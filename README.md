@@ -85,7 +85,11 @@ With hypergit, each project participant has their own hypergit repo. There is no
 "origin" central authority.
 
 - @noffle: `hypergit://207dbaef657d688ad528573ae66b5a0bede40fcb82e6b91afc44ddd43c84874f`
-- [@isomorphic-git](https://github.com/isomorphic-git): `hypergit://5701a1c08ae15dba17e181b1a9a28bdfb8b95200d77a25be6051bb018e25439a`
 
 If you'd like your hypergit added, open a PR.
 
+## Other hypergits
+
+- [@isomorphic-git](https://github.com/isomorphic-git): `hypergit://5701a1c08ae15dba17e181b1a9a28bdfb8b95200d77a25be6051bb018e25439a`
+
+If you'd like your hypergit added, open a PR.
