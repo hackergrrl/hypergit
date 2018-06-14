@@ -44,6 +44,7 @@ switch (args._[2]) {
     }
     break
   case 'seed':
+    fs.unlinkSync(path.join(envpaths.config, 'log.txt'))
     console2file({
       filePath: path.join(envpaths.config, 'log.txt'),
       fileOnly: false
