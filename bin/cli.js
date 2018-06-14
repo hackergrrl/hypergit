@@ -13,6 +13,11 @@ var mkdirp = require('mkdirp')
 var crypto = require('hypercore/lib/crypto')
 var gitconfig = require('gitconfiglocal')
 var web = require('../web')
+var create = require('../src/commands/create')
+var u = require('../src/utils')
+
+var createRemote = u.createRemote
+var getHyperdb = u.getHyperdb
 
 if (args._.length === 2) {
   printUsage()
@@ -21,12 +26,7 @@ if (args._.length === 2) {
 
 switch (args._[2]) {
   case 'create':
-    getHyperdb(null, function (err, db) {
-      var name = 'swarm'
-      var key = db.key.toString('hex')
-      createRemote(name, 'hypergit://' + key)
-      console.log('hypergit://' + key)
-    })
+    create()
     break
   case 'seed':
     // seed ALL repos
@@ -141,22 +141,6 @@ function getCurrentHyperdb (cb) {
   })
 }
 
-function getHyperdb (key, cb) {
-  var db
-  if (key === null) {
-    // create
-    var keypair = crypto.keyPair()
-    key = keypair.publicKey.toString('hex')
-    db = hyperdb(path.join(envpaths.config, key), key, {secretKey: keypair.secretKey})
-  } else {
-    // existing
-    db = hyperdb(path.join(envpaths.config, key), key)
-  }
-  db.ready(function () {
-    cb(null, db)
-  })
-}
-
 function ensureNoHypergit (key) {
   if (fs.existsSync(hyperdir(key))) {
     console.log('A hypergit repo already exists in this directory.')
@@ -208,7 +192,7 @@ function swarmReplicate (swarm, db) {
   swarm.on('connection', function (conn, info) {
     console.log('['+key+'] found peer', info.id.toString('hex'))
     var r = db.replicate({live:false})
-    r.pipe(conn).pipe(r) 
+    r.pipe(conn).pipe(r)
     r.once('end', function () {
       console.error('[' + key + '] done replicating', info.id.toString('hex'))
     })
@@ -236,10 +220,6 @@ function getAllHyperdbs (cb) {
       cb(null, dbs)
     }
   })
-}
-
-function createRemote (name, url) {
-  spawn('git', ['remote', 'add', name, url])
 }
 
 function createFork (db, cb) {
