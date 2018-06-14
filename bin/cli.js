@@ -4,6 +4,7 @@ var through = require('through2')
 var fs = require('fs')
 var path = require('path')
 var args = require('minimist')(process.argv)
+const service = require('os-service')
 var hyperdb = require('hyperdb')
 var spawn = require('child_process').spawnSync
 var discovery = require('discovery-swarm')
@@ -28,7 +29,18 @@ switch (args._[2]) {
       console.log('hypergit://' + key)
     })
     break
+  case 'service':
+    switch (args._[3]) {
+      case 'install':
+        service.add("hypergit", { programArgs: ["seed"] }, (error) => error ? console.log(error) : console.log('installed'))
+        break
+      case 'remove':
+        service.remove("hypergit", (error) => error ? console.log(error) : console.log('removed'))
+        break
+    }
+    break
   case 'seed':
+    service.run(() => service.stop())
     // seed ALL repos
     getAllHyperdbs(function (err, dbs) {
       dbs.forEach(function (db, n) {
