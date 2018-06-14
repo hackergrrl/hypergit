@@ -85,6 +85,7 @@ With hypergit, each project participant has their own hypergit repo. There is no
 "origin" central authority.
 
 - @noffle: `hypergit://207dbaef657d688ad528573ae66b5a0bede40fcb82e6b91afc44ddd43c84874f`
+- @wmhilton: `hypergit://86b0753499e01564be180c4f5b8c7f53449bfc27753eb12fb97adf81838167ce`
 
 If you'd like your hypergit added, open a PR.
 
