@@ -12,9 +12,9 @@ var envpaths = require('env-paths')('hypergit')
 var mkdirp = require('mkdirp')
 var crypto = require('hypercore/lib/crypto')
 var gitconfig = require('gitconfiglocal')
-var web = require('../web')
 var create = require('../src/commands/create')
 var seed = require('../src/commands/seed')
+var web = require('../src/commands/web')
 var u = require('../src/utils')
 
 var createRemote = u.createRemote
@@ -34,9 +34,7 @@ switch (args._[2]) {
     seed()
     break
   case 'web':
-    getAllHyperdbs(function (err, dbs) {
-      web(dbs)
-    })
+    web()
     break
   case 'id':
     getHypergitRemotes(function (err, remotes) {
