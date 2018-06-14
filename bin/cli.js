@@ -4,7 +4,8 @@ var through = require('through2')
 var fs = require('fs')
 var path = require('path')
 var args = require('minimist')(process.argv)
-const service = require('os-service')
+var service = require('os-service')
+var console2file = require('console2file').default
 var hyperdb = require('hyperdb')
 var spawn = require('child_process').spawnSync
 var discovery = require('discovery-swarm')
@@ -21,6 +22,9 @@ if (args._.length === 2) {
 }
 
 switch (args._[2]) {
+  case 'where':
+    console.log(envpaths.config)
+    break
   case 'create':
     getHyperdb(null, function (err, db) {
       var name = 'swarm'
@@ -40,6 +44,10 @@ switch (args._[2]) {
     }
     break
   case 'seed':
+    console2file({
+      filePath: path.join(envpaths.config, 'log.txt'),
+      fileOnly: false
+    })
     service.run(() => service.stop())
     // seed ALL repos
     getAllHyperdbs(function (err, dbs) {

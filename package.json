@@ -19,6 +19,7 @@
   },
   "keywords": [],
   "dependencies": {
+    "console2file": "^1.1.5",
     "dat-swarm-defaults": "^1.0.1",
     "discovery-swarm": "^5.1.1",
     "env-paths": "^1.0.0",
