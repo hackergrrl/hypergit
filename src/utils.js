@@ -4,6 +4,7 @@ var hyperdb = require('hyperdb')
 var crypto = require('hypercore/lib/crypto')
 var spawn = require('child_process').spawnSync;
 var envpaths = require('env-paths')('hypergit')
+var gitconfig = require('gitconfiglocal')
 
 exports.createRemote = function createRemote (name, url) {
   spawn('git', ['remote', 'add', name, url]);
@@ -42,5 +43,21 @@ exports.getAllHyperdbs = function getAllHyperdbs (cb) {
       if (--pending) return
       cb(null, dbs)
     }
+  })
+}
+
+exports.getHypergitRemotes = function getHypergitRemotes (cb) {
+  gitconfig('.', function (err, config) {
+    if (err) return cb(err)
+    var remotes = Object.keys(config.remote)
+      .map(function (key) {
+        var remote = config.remote[key]
+        remote.name = key
+        return remote
+      })
+      .filter(function (remote) {
+        return remote.url.startsWith('hypergit://')
+      })
+    cb(null, remotes)
   })
 }

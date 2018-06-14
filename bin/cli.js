@@ -15,11 +15,12 @@ var gitconfig = require('gitconfiglocal')
 var create = require('../src/commands/create')
 var seed = require('../src/commands/seed')
 var web = require('../src/commands/web')
+var id = require('../src/commands/id')
 var u = require('../src/utils')
 
 var createRemote = u.createRemote
-var getAllHyperdbs = u.getAllHyperdbs
 var getHyperdb = u.getHyperdb
+var getHypergitRemotes = u.getHypergitRemotes
 
 if (args._.length === 2) {
   printUsage()
@@ -37,32 +38,7 @@ switch (args._[2]) {
     web()
     break
   case 'id':
-    getHypergitRemotes(function (err, remotes) {
-      if (!remotes.length) {
-        console.log('No hypergit remotes on this git repo.')
-        return process.exit(1)
-      } else if (remotes.length === 1) {
-        var key = remotes[0].url.replace('hypergit://', '')
-        getHyperdb(key, function (err, db) {
-          if (err) throw err
-          console.log(db.local.key.toString('hex'))
-        })
-      } else if (!process.argv[3]) {
-        console.log('Multiple hypergit remotes present. Specify which one you\'d like the id of.')
-        return process.exit(1)
-      } else {
-        var remote = config.remote[process.argv[3]]
-        if (!remote) {
-          console.log('No hypergit remote by that name.')
-          return process.exit(1)
-        }
-        var key = remote.url.replace('hypergit://', '')
-        getHyperdb(key, function (err, db) {
-          if (err) throw err
-          console.log(db.local.key.toString('hex'))
-        })
-      }
-    })
+    id()
     break
   case 'fork':
     getHypergitRemotes(function (err, remotes) {
@@ -153,22 +129,6 @@ function ensureValidHypergit () {
     console.log('There is no git repository here.')
     return process.exit(1)
   }
-}
-
-function getHypergitRemotes (cb) {
-  gitconfig('.', function (err, config) {
-    if (err) return cb(err)
-    var remotes = Object.keys(config.remote)
-      .map(function (key) {
-        var remote = config.remote[key]
-        remote.name = key
-        return remote
-      })
-      .filter(function (remote) {
-        return remote.url.startsWith('hypergit://')
-      })
-    cb(null, remotes)
-  })
 }
 
 function printUsage () {
