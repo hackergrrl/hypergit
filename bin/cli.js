@@ -14,9 +14,11 @@ var crypto = require('hypercore/lib/crypto')
 var gitconfig = require('gitconfiglocal')
 var web = require('../web')
 var create = require('../src/commands/create')
+var seed = require('../src/commands/seed')
 var u = require('../src/utils')
 
 var createRemote = u.createRemote
+var getAllHyperdbs = u.getAllHyperdbs
 var getHyperdb = u.getHyperdb
 
 if (args._.length === 2) {
@@ -29,15 +31,7 @@ switch (args._[2]) {
     create()
     break
   case 'seed':
-    // seed ALL repos
-    getAllHyperdbs(function (err, dbs) {
-      dbs.forEach(function (db, n) {
-        dbs.push(db)
-        var swarm = discovery(swarmDefaults())
-        swarm.listen(2342 + n)
-        swarmReplicate(swarm, db)
-      })
-    })
+    seed()
     break
   case 'web':
     getAllHyperdbs(function (err, dbs) {
@@ -183,43 +177,6 @@ function printUsage () {
   require('fs')
     .createReadStream(path.join(__dirname, '/usage.txt'))
     .pipe(process.stdout)
-}
-
-function swarmReplicate (swarm, db) {
-  var key = db.key.toString('hex')
-  console.log('[' + key + '] seeding')
-  swarm.join(key)
-  swarm.on('connection', function (conn, info) {
-    console.log('['+key+'] found peer', info.id.toString('hex'))
-    var r = db.replicate({live:false})
-    r.pipe(conn).pipe(r)
-    r.once('end', function () {
-      console.error('[' + key + '] done replicating', info.id.toString('hex'))
-    })
-    r.once('error', function (err) {
-      console.error('[' + key + '] timeout with', info.id.toString('hex'))
-    })
-  })
-}
-
-function getAllHyperdbs (cb) {
-  fs.readdir(envpaths.config, function (err, keys) {
-    if (err) throw err
-    var dbs = []
-    var pending = 0
-    keys.forEach(function (key, n) {
-      pending++
-      getHyperdb(key, function (err, db) {
-        if (err) return done()
-        dbs.push(db)
-        done()
-      })
-    })
-    function done () {
-      if (--pending) return
-      cb(null, dbs)
-    }
-  })
 }
 
 function createFork (db, cb) {
