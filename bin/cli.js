@@ -16,6 +16,7 @@ var create = require('../src/commands/create')
 var seed = require('../src/commands/seed')
 var web = require('../src/commands/web')
 var id = require('../src/commands/id')
+var fork = require('../src/commands/fork')
 var u = require('../src/utils')
 
 var createRemote = u.createRemote
@@ -41,40 +42,7 @@ switch (args._[2]) {
     id()
     break
   case 'fork':
-    getHypergitRemotes(function (err, remotes) {
-      if (!remotes.length) {
-        console.log('No hypergit remotes on this git repo.')
-        return process.exit(1)
-      } else if (remotes.length === 1) {
-        var key = remotes[0].url.replace('hypergit://', '')
-        getHyperdb(key, function (err, db) {
-          if (err) throw err
-          createFork(db, function (err, newDb) {
-            var key = newDb.key.toString('hex')
-            createRemote('fork', 'hypergit://' + key)
-            console.log('Created new remote "fork": hypergit://' + key)
-          })
-        })
-      } else if (!process.argv[3]) {
-        console.log('Multiple hypergit remotes present. Specify which one you\'d like the id of.')
-        return process.exit(1)
-      } else {
-        var remote = config.remote[process.argv[3]]
-        if (!remote) {
-          console.log('No hypergit remote by that name.')
-          return process.exit(1)
-        }
-        var key = remote.url.replace('hypergit://', '')
-        getHyperdb(key, function (err, db) {
-          if (err) throw err
-          createFork(db, function (err, newDb) {
-            var key = newDb.key.toString('hex')
-            createRemote('fork', 'hypergit://' + key)
-            console.log('Created new remote "fork": hypergit://' + key)
-          })
-        })
-      }
-    })
+    fork()
     break
   default:
     printUsage()
@@ -135,25 +103,4 @@ function printUsage () {
   require('fs')
     .createReadStream(path.join(__dirname, '/usage.txt'))
     .pipe(process.stdout)
-}
-
-function createFork (db, cb) {
-  getHyperdb(null, function (err, newDb) {
-    var t = through.obj(write, flush)
-    db.createHistoryStream().pipe(t)
-
-    function write (node, _, next) {
-      console.log('copying', node.key)
-      newDb.put(node.key, node.value, function (err) {
-        if (err) throw err
-        next()
-      })
-    }
-
-    function flush (done) {
-      console.log('flushing')
-      done()
-      cb(null, newDb)
-    }
-  })
 }
