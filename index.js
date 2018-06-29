@@ -1,0 +1,5 @@
+exports.create = require('./src/commands/create')
+exports.fork = require('./src/commands/fork')
+exports.id = require('./src/commands/id')
+exports.seed = require('./src/commands/seed')
+exports.web = require('./src/commands/web')
