@@ -1,8 +1,13 @@
+var fs = require('fs')
+var path = require('path')
 var console2file = require('console2file').default
 var os_service = require('os-service')
 var sudo = require('sudo-prompt')
 var isElevated = require('is-elevated')
 var seed = require('./seed')
+var utils = require('../utils')
+
+var envpaths = utils.envpaths
 
 function logresult (status) {
   return function (error) {
@@ -53,12 +58,20 @@ module.exports = function service (command) {
       fs.unlink(path.join(envpaths.config, 'log.txt'), () => {
         console2file({
           filePath: path.join(envpaths.config, 'log.txt'),
+          timestamp: true,
           fileOnly: false
         })
+        console.log('Running with CLI arguments: ' + formatArgvString(process.argv))
         os_service.run(() => os_service.stop())
         // seed ALL repos
         seed()
       })
+      break
+    case 'logdir':
+      console.log(envpaths.config)
+      break
+    default:
+      utils.printUsage()
       break
   }
 }

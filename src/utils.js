@@ -6,6 +6,14 @@ var spawn = require('child_process').spawnSync;
 var envpaths = require('env-paths')('hypergit')
 var gitconfig = require('gitconfiglocal')
 
+exports.envpaths = envpaths
+
+exports.printUsage = function printUsage () {
+  require('fs')
+    .createReadStream(path.join(__dirname, '..', 'bin/usage.txt'))
+    .pipe(process.stdout)
+}
+
 exports.createRemote = function createRemote (name, url) {
   spawn('git', ['remote', 'add', name, url]);
 }
