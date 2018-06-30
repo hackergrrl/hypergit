@@ -16,7 +16,7 @@ USAGE: hypergit [command]
 Commands:
   create        Create a hypergit repo.
 
-  seed          Actively share this repo with other peers.
+  seed          Actively share all local repos with peers.
 
   fork          Create a new remote 'fork' of the current repo.
 
