@@ -8,3 +8,10 @@ Commands:
   fork          Create a new remote 'fork' of the current repo.
 
   web           Host local web frontend.
+
+  service install      Install an OS service that starts the seeder on boot
+
+  service remove       Uninstall the OS service that starts the seeder on boot
+
+  service logdir       Print out the directory where the log file are saved
+

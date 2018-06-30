@@ -7,15 +7,24 @@ var seed = require('../src/commands/seed')
 var web = require('../src/commands/web')
 var id = require('../src/commands/id')
 var fork = require('../src/commands/fork')
+var service = require('../src/commands/service')
+var utils = require('../src/utils')
 
 if (args._.length === 2) {
-  printUsage()
+  utils.printUsage()
   return
 }
 
 switch (args._[2]) {
   case 'create':
     create()
+    break
+  case 'service':
+    if (args._.length === 3) {
+      utils.printUsage()
+      return
+    }
+    service(args._[3])
     break
   case 'seed':
     seed()
@@ -30,12 +39,7 @@ switch (args._[2]) {
     fork()
     break
   default:
-    printUsage()
+    utils.printUsage()
     break
 }
 
-function printUsage () {
-  require('fs')
-    .createReadStream(path.join(__dirname, '/usage.txt'))
-    .pipe(process.stdout)
-}
