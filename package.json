@@ -26,6 +26,7 @@
     "gitconfiglocal": "^2.0.1",
     "gitverse": "^1.0.0",
     "hypercore": "^6.15.0",
+    "hypercore-crypto": "^1.0.0",
     "hyperdb": "^3.1.2",
     "hyperdb-git-repo": "^1.0.2",
     "minimist": "^1.2.0",
