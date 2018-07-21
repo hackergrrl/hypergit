@@ -43,7 +43,7 @@ hyperdb, which mirrors how git would lay itself out on the filesystem.
 ### P2P sync & works offline
 
 hyperdb's special power is the ability to sync itself with other peers over the
-internet.
+internet and local network.
 
 Creating a hypergit repo (hypergit create) adds a remote called swarm to your
 .git/config, and creates a new unique id (it's actually a public key) that
