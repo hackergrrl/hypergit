@@ -70,7 +70,7 @@ host their git repositories. With hypergit all of the data lives on peers
 directly, so everyone with a laptop is a first-class citizen, and
 doesn't have to choose between hosted services that could go down at some point.
 By using hypergit seed you can, not unlike bittorrent, re-host git repos you
-like on servers and provide them greater availability.)
+like on servers and provide them greater availability.
 
 ## What hypergit isn't
 
